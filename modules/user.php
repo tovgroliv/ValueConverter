@@ -1,9 +1,9 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/services/database.php");
-require_once($_SERVER['DOCUMENT_ROOT'] . "/services/sessions.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/services/database.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/services/sessions.php");
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/modules/value_converter.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/modules/value_converter.php");
 
 class User
 {
@@ -16,7 +16,7 @@ class User
         $this->login = Sessions::getSession("user_login");
     }
 
-    public static function authorize($login, $password)
+    public static function login($login, $password)
     {
         $password = md5($password);
         $result = DataBase::getRequest("SELECT `id`,`login` FROM `User` WHERE `login`='{$login}' AND `password`='{$password}'");
@@ -64,17 +64,19 @@ class User
 
     private function renderLogout()
     {
-        echo "
-            <form method='post' action='services/post/logout.php'>
-                <input type='submit' value='Выход' />
+        echo '
+            <form method="POST" action="">
+                <input type="hidden" name="action" value="logout" />
+                <input type="submit" value="Выход" />
             </form>
-        ";
+        ';
     }
 
     private function renderAuthorizationForm()
     {
         echo '
-            <form metod="post" action="services/post/login.php">
+            <form method="POST" action="">
+                <input type="hidden" name="action" value="login" />
                 <p>
                     <label>Логин</label>
                     <input name="login" type="text" />
@@ -84,7 +86,7 @@ class User
                     <input name="password" type="password" />
                 </p>
                 <p>
-                    <input type="submit" value="авторизоваться" />
+                    <input type="submit" value="Авторизоваться" />
                 </p>
             </form>
         ';
