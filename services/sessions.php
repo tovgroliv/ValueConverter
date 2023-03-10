@@ -1,7 +1,7 @@
 <?php
 
 class Sessions
-{    
+{
     private static function sessionStart()
     {
         session_start();
@@ -9,31 +9,28 @@ class Sessions
 
     public static function setSession($name, $value)
     {
-        if (session_status() === PHP_SESSION_NONE)
-        {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         $_SESSION[$name] = $value;
     }
 
     public static function getSession($name)
     {
-        if (session_status() === PHP_SESSION_NONE)
-        {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         return $_SESSION[$name];
     }
 
     public static function unsetSession($name)
     {
-        if (session_status() === PHP_SESSION_NONE)
-        {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         unset($_SESSION[$name]);
     }
 }

@@ -20,14 +20,16 @@ class User
     {
         $password = md5($password);
         $result = DataBase::getRequest("SELECT `id`,`login` FROM `User` WHERE `login`='{$login}' AND `password`='{$password}'");
-        
-        if ($result)
-        {
-            while ($row = mysqli_fetch_array($result))
-            {
-                if (isset($row["id"])) Sessions::setSession("user_id", $row["id"]);
-                if (isset($row["login"])) Sessions::setSession("user_login", $row["login"]);
-            }
+
+        if (!$result) {
+            return;
+        }
+
+        while ($row = mysqli_fetch_array($result)) {
+            if (isset($row["id"]))
+                Sessions::setSession("user_id", $row["id"]);
+            if (isset($row["login"]))
+                Sessions::setSession("user_login", $row["login"]);
         }
     }
 
@@ -45,12 +47,9 @@ class User
 
     public function render()
     {
-        if ($this->logined())
-        {
+        if ($this->logined()) {
             $this->renderUserControlPanel();
-        }
-        else
-        {
+        } else {
             $this->renderAuthorizationForm();
         }
     }

@@ -12,7 +12,7 @@ class ValueConverter
     public $nominal;
     public $name;
     public $value;
-    
+
     public function __construct($id, $char_code, $nominal, $name, $value)
     {
         $this->id = $id;
@@ -35,12 +35,10 @@ class ValueConverter
         $valueTo = 0;
         $valueFrom = 0;
 
-        if (isset($_GET["valueTo"]) && isset($_GET["valueId"]))
-        {
+        if (isset($_GET["valueTo"]) && isset($_GET["valueId"])) {
             $valueTo = $values[$_GET["valueId"]]->valueTo($_GET["valueTo"]);
         }
-        if (isset($_GET["valueFrom"]) && isset($_GET["valueId"]))
-        {
+        if (isset($_GET["valueFrom"]) && isset($_GET["valueId"])) {
             $valueFrom = $values[$_GET["valueId"]]->valueFrom($_GET["valueFrom"]);
         }
 
@@ -71,13 +69,13 @@ class ValueConverter
     {
         $result = DataBase::getRequest("SELECT * FROM `Value`");
         $return = array();
-        
-        if ($result)
-        {
-            while ($row = mysqli_fetch_array($result))
-            {
-                $return[$row["id"]] = new ValueConverter($row["id"], $row["char_code"], $row["nominal"], $row["name"], $row["value"]);
-            }
+
+        if (!$result) {
+            return $return;
+        }
+
+        while ($row = mysqli_fetch_array($result)) {
+            $return[$row["id"]] = new ValueConverter($row["id"], $row["char_code"], $row["nominal"], $row["name"], $row["value"]);
         }
 
         return $return;
@@ -88,19 +86,17 @@ class ValueConverter
         $url = ValueConverter::$values_url;
         $xml = simplexml_load_file($url);
 
-        if ($xml === false)
-        {
+        if ($xml === false) {
             return;
         }
 
         DataBase::getRequest("DELETE FROM `Value`");
-        
+
         $json = json_encode($xml);
         $values = json_decode($json, TRUE);
 
-        foreach ($values["Valute"] as $key => $value)
-        {
-            $double = str_replace(",", ".",  $value["Value"]);
+        foreach ($values["Valute"] as $key => $value) {
+            $double = str_replace(",", ".", $value["Value"]);
             $sql = "INSERT INTO `Value` (`id`, `char_code`, `nominal`, `name`, `value`) VALUES ('{$value["@attributes"]["ID"]}', '{$value["CharCode"]}', '{$value["Nominal"]}', '{$value["Name"]}', '{$double}')";
             DataBase::getRequest($sql);
         }
@@ -108,8 +104,7 @@ class ValueConverter
 
     public function valueFrom($amount)
     {
-        if ($amount == 0)
-        {
+        if ($amount == 0) {
             return 0;
         }
         return $this->value / $amount * $this->nominal;
@@ -117,8 +112,7 @@ class ValueConverter
 
     public function valueTo($amount)
     {
-        if ($amount == 0)
-        {
+        if ($amount == 0) {
             return 0;
         }
         return $amount * $this->nominal / $this->value;
