@@ -3,16 +3,58 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . "/services/database.php");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/services/sessions.php");
 
+/**
+ * Класс конвертера валют.
+ */
 class ValueConverter
 {
+    /**
+     * API курса валют.
+     * 
+     * @var string
+     */
     private static $values_url = "http://www.cbr.ru/scripts/XML_daily.asp";
 
+    /**
+     * Идентификатор валюты.
+     * 
+     * @var string
+     */
     public $id;
+    /**
+     * Код валюты.
+     * 
+     * @var string
+     */
     public $char_code;
+    /**
+     * Номинал валюты.
+     * 
+     * @var string
+     */
     public $nominal;
+    /**
+     * Наименование валюты.
+     * 
+     * @var string
+     */
     public $name;
+    /**
+     * Курс валюты.
+     * 
+     * @var string
+     */
     public $value;
 
+    /**
+     * Конструктор.
+     * 
+     * @param string $id
+     * @param string $char_code
+     * @param string $nominal
+     * @param string $name
+     * @param string $value
+     */
     public function __construct($id, $char_code, $nominal, $name, $value)
     {
         $this->id = $id;
@@ -22,6 +64,9 @@ class ValueConverter
         $this->value = $value;
     }
 
+    /**
+     * Отображение UI конвертера валют.
+     */
     public static function render()
     {
         $select = "";
@@ -65,6 +110,11 @@ class ValueConverter
         ";
     }
 
+    /**
+     * Получение массива всех заданных валют.
+     * 
+     * @return array
+     */
     public static function getAllValue()
     {
         $result = DataBase::getRequest("SELECT * FROM `Value`");
@@ -81,6 +131,9 @@ class ValueConverter
         return $return;
     }
 
+    /**
+     * Обновление курса валют с использование API цб.
+     */
     public static function updateAllValue()
     {
         $url = ValueConverter::$values_url;
@@ -102,19 +155,29 @@ class ValueConverter
         }
     }
 
+    /**
+     * Перевод в валюту по курсу.
+     * 
+     * @param double $name
+     */
     public function valueFrom($amount)
     {
         if ($amount == 0) {
             return 0;
         }
-        return $this->value / $amount * $this->nominal;
+        return $this->value * $this->nominal / $amount;
     }
 
+    /**
+     * Перевод в рубли по курсу.
+     * 
+     * @param double $name
+     */
     public function valueTo($amount)
     {
         if ($amount == 0) {
             return 0;
         }
-        return $amount * $this->nominal / $this->value;
+        return $amount / $this->value * $this->nominal;
     }
 }

@@ -1,6 +1,9 @@
 <? require_once($_SERVER['DOCUMENT_ROOT'] . "/modules/user.php") ?>
 
 <?php
+/**
+ * События login и logout осуществляют аторизацию и выход соотвественно. 
+ */
 if (isset($_POST["action"])) {
     switch ($_POST["action"]) {
         case "logout":

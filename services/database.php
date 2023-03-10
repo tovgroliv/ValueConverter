@@ -3,8 +3,16 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/vendor/autoload.php");
 
 class DataBase
 {
+    /**
+     * Активное подключение к бд. 
+     * 
+     * @var mysqli
+     */
     private static $connection;
 
+    /**
+     * Создание подключения к бд.
+     */
     private static function connectToDataBase()
     {
         $dotenv = Dotenv\Dotenv::createImmutable($_SERVER["DOCUMENT_ROOT"]);
@@ -29,6 +37,9 @@ class DataBase
         }
     }
 
+    /**
+     * Закрытие подключения к бд.
+     */
     private static function closeConnectToDataBase()
     {
         if (!DataBase::$connection) {
@@ -39,10 +50,16 @@ class DataBase
         !DataBase::$connection = null;
     }
 
+    /**
+     * Выполнение sql запроса. 
+     * 
+     * @param string $sql
+     * @return bool|mysqli_result
+     */
     public static function getRequest($sql)
     {
         if ($sql == "") {
-            return;
+            return false;
         }
 
         if (!DataBase::$connection) {
@@ -50,7 +67,7 @@ class DataBase
         }
 
         if (!DataBase::$connection) {
-            return;
+            return false;
         }
 
         $result = DataBase::$connection->query($sql);

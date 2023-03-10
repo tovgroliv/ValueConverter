@@ -5,17 +5,39 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/services/sessions.php");
 
 require_once($_SERVER["DOCUMENT_ROOT"] . "/modules/value_converter.php");
 
+/**
+ * Класс пользователя.
+ */
 class User
 {
+    /**
+     * Идентификатор пользователя.
+     * 
+     * @var int
+     */
     private $id;
+    /**
+     * Логин пользователя.
+     * 
+     * @var string
+     */
     private $login;
 
+    /**
+     * Конструктор.
+     */
     public function __construct()
     {
         $this->id = Sessions::getSession("user_id");
         $this->login = Sessions::getSession("user_login");
     }
 
+    /**
+     * Авторизация пользователя.
+     * 
+     * @param string $login
+     * @param string $password
+     */
     public static function login($login, $password)
     {
         if (!isset($login, $password))
@@ -36,18 +58,30 @@ class User
         }
     }
 
+    /**
+     * Выход пользователя.
+     */
     public static function logout()
     {
         Sessions::unsetSession("user_id");
         Sessions::unsetSession("user_login");
     }
 
+    /**
+     * Проверка авторизации.
+     * 
+     * @todo Сохранение случайного значения для сессии в бд и сравнение его из сессии.
+     * @return bool
+     */
     public function logined()
     {
         $logined = isset($this->id, $this->login);
         return $logined;
     }
 
+    /**
+     * Оторажение UI.
+     */
     public function render()
     {
         if ($this->logined()) {
@@ -56,6 +90,10 @@ class User
             $this->renderAuthorizationForm();
         }
     }
+    
+    /**
+     * Оторажение UI личного кабинета.
+     */
     private function renderUserControlPanel()
     {
         $welcome = "Welcome, {$this->login} #{$this->id}!";
@@ -64,6 +102,9 @@ class User
         $this->renderLogout();
     }
 
+    /**
+     * Оторажение UI выхода.
+     */
     private function renderLogout()
     {
         echo '
@@ -74,6 +115,9 @@ class User
         ';
     }
 
+    /**
+     * Оторажение UI формы входа.
+     */
     private function renderAuthorizationForm()
     {
         echo '
