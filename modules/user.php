@@ -18,6 +18,9 @@ class User
 
     public static function login($login, $password)
     {
+        if (!isset($login, $password))
+            return;
+
         $password = md5($password);
         $result = DataBase::getRequest("SELECT `id`,`login` FROM `User` WHERE `login`='{$login}' AND `password`='{$password}'");
 
