@@ -6,8 +6,7 @@
 class Sessions
 {
     /**
-     * @param Id $id
-     * @param string $status
+     * Запеск сессии.
      */
     private static function sessionStart()
     {
