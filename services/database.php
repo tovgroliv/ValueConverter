@@ -17,7 +17,8 @@ class DataBase
             DataBase::$password,
             DataBase::$database);
 
-        if (DataBase::$connection->connect_error) {
+        if (DataBase::$connection->connect_error)
+        {
             die("Не удалось подключиться к бд: " . DataBase::$connection->connect_error);
         }
     }
